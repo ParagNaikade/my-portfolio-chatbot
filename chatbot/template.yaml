@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Chatbot backend (Lambda + API Gateway) calling Bedrock
+
+Globals:
+  Function:
+    Runtime: nodejs24.x
+    Timeout: 10
+
+Resources:
+  ChatFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: app.lambdaHandler
+      Policies:
+        - AmazonBedrockFullAccess
+      Environment:
+        Variables:
+          BEDROCK_REGION: ap-southeast-2
+          MODEL_ID: amazon.nova-micro-v1:0
+      Events:
+        ChatApi:
+          Type: Api
+          Properties:
+            Path: /chat
+            Method: post
+
+Outputs:
+  ChatApiUrl:
+    Description: Public API endpoint for chat
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/chat"
