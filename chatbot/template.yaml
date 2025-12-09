@@ -7,6 +7,12 @@ Globals:
     Runtime: nodejs24.x
     Timeout: 10
 
+Parameters:
+  KnowledgeBaseIdParam:
+    Type: String
+    Description: "The ID of the Amazon Bedrock Knowledge Base"
+    Default: "MQCRGH5FOD" # Default value for local or dev use
+
 Resources:
   ChatFunction:
     Type: AWS::Serverless::Function
@@ -19,6 +25,7 @@ Resources:
         Variables:
           BEDROCK_REGION: ap-southeast-2
           MODEL_ID: amazon.nova-micro-v1:0
+          KNOWLEDGE_BASE_ID: !Ref KnowledgeBaseIdParam
       Events:
         ChatApi:
           Type: Api
