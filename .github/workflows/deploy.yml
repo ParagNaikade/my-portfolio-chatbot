@@ -1,0 +1,54 @@
+name: Deploy SAM (Lambda + API Gateway)
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  id-token: write # required for OIDC
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ap-southeast-2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+          token: ${{ secrets.GITHUB_TOKEN }} # speeds up version resolution
+      # Docs: setup-sam installs the SAM CLI on the runner. [3](https://github.com/aws-actions/setup-sam)
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      # Docs: configure-aws-credentials supports OIDC; ensure id-token:write permission. [2](https://github.com/aws-actions/configure-aws-credentials)
+
+      - name: Validate template
+        run: sam validate
+      # Reference: SAM CLI core commands. [7](https://docs.amazonaws.cn/en_us/serverless-application-model/latest/developerguide/using-sam-cli-corecommands.html)
+
+      - name: Build (use Docker for consistent native deps)
+        run: sam build --use-container
+      # Reference: SAM build & use-container guidance. [4](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/deploying-using-github.html)
+
+      - name: Deploy to AWS
+        run: |
+          sam deploy \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset
+      # Docs: sam deploy flags & capabilities. [6](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-deploy.html)
+      - name: Print endpoint
+        run: |
+          aws cloudformation describe-stacks \
+            --region $AWS_REGION \
+            --stack-name chatbot \
+            --query "Stacks[0].Outputs[?OutputKey=='ChatApiUrl'].OutputValue" \

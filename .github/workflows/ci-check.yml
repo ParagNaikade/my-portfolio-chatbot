@@ -1,0 +1,36 @@
+name: CI Check
+
+on:
+  pull_request:
+    branches: ["develop", "main"]
+
+jobs:
+  ci-check:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ap-southeast-2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: |
+          cd src
+          npm ci
+
+      - name: Set up AWS SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate SAM template
+        run: sam validate --region $AWS_REGION
+
+      - name: Build SAM application
+        run: sam build --use-container

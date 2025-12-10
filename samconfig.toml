@@ -1,0 +1,27 @@
+
+version = 0.1
+
+[default.build.parameters]
+use_container = true
+
+[default.deploy.parameters]
+stack_name = "chatbot"
+region = "ap-southeast-2"
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = false
+fail_on_empty_changeset = false
+resolve_s3 = false
+s3_bucket = "parag-sam-artifacts-ap-southeast-2"
+
+[default.sync.parameters]
+watch = true
+
+[default.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[default.local_start_lambda.parameters]
+warm_containers = "EAGER"
+
+[default.package.parameters]
+resolve_s3 = false
+s3_bucket = "parag-sam-artifacts-ap-southeast-2"
