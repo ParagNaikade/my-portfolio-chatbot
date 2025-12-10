@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: Chatbot backend (Lambda + API Gateway) calling Bedrock
 
@@ -6,6 +6,11 @@ Globals:
   Function:
     Runtime: nodejs24.x
     Timeout: 10
+  Api:
+    Cors:
+      AllowMethods: "'POST,OPTIONS'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
 
 Parameters:
   KnowledgeBaseIdParam:
