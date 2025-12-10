@@ -14,6 +14,7 @@ region = "ap-southeast-2"
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = false
 fail_on_empty_changeset = false
+resolve_s3 = true
 
 [default.sync.parameters]
 watch = true
@@ -23,3 +24,6 @@ warm_containers = "EAGER"
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"
+
+[default.package.parameters]
+resolve_s3 = true
