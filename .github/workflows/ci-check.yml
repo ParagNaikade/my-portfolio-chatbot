@@ -32,7 +32,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate SAM template
-        run: sam validate
+        run: sam validate --region $AWS_REGION
 
       - name: Build SAM application
         run: sam build --use-container
