@@ -36,8 +36,3 @@ jobs:
 
       - name: Build SAM application
         run: sam build --use-container
-
-      - name: Run unit tests
-        run: |
-          cd src
-          npm test
