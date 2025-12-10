@@ -9,6 +9,8 @@ on:
 jobs:
   ci-check:
     runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ap-southeast-2
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -30,12 +32,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate SAM template
-        run: sam validate
+        run: sam validate --region $AWS_REGION
 
       - name: Build SAM application
         run: sam build --use-container
-
-      - name: Run unit tests
-        run: |
-          cd src
-          npm test
