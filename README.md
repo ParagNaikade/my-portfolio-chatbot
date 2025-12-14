@@ -73,7 +73,7 @@ Open an issue for bugs or feature requests.
 
 ## 📄 License
 
-MIT
+ Apache License 2.0
 
 ---
 
